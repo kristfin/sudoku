@@ -16,9 +16,9 @@ namespace Sudoku
         public long IsValidCount { get; private set; } = 0;
         public int Seed { get; }
 
-        public Sudoku(int size=3, int seed = 0)
+        public Sudoku(int size=3, int seed = Int32.MinValue)
         {
-            this.Seed = seed == 0 ?(int)DateTime.UtcNow.Ticks : seed;
+            this.Seed = seed == Int32.MinValue ? (int)DateTime.UtcNow.Ticks : seed;
             random = new Random(this.Seed);
             board = new Board(size);
         }
