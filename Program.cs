@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Sudoku
 {
@@ -7,40 +9,28 @@ namespace Sudoku
         static void Main(string[] args)
         {
             int size = 3;
-            // var sudoku = new Sudoku(size, 1234);
-            var sudoku = new Sudoku(size);
-            Console.WriteLine(sudoku);
-
-            sudoku.SetCell(new Cell(0, 0, 1));
-            sudoku.SetCell(new Cell(1, 0, 2));
-            Console.WriteLine(sudoku);
-
-
-            for (int i=0; i<size*size*size*size; i++)
+            var file = File.AppendText(@"c:\tmp\sudoku.txt");
+            file.AutoFlush = true;
+            while (true)
             {
-                if (sudoku.EmptyCount == 0)
+                var sudoku = new Sudoku(size);//, 262632719);//, 2041746577);
+                var b = sudoku.Solve();
+                if (b==true)
                 {
-                    Console.WriteLine("Congrats.  You have a new Sudoku");
-                    break;
+                    Console.WriteLine("\n" + sudoku);
+                    file.WriteLine(sudoku.Seed);                    
                 }
-                var cell = sudoku.NextEmptyCell();
-                if (cell == null)
+                else if (sudoku.EmptyCount < 3)                
                 {
-                    Console.WriteLine("No more locations");
-                    break;
+                    Console.WriteLine("----------");
+                    Console.WriteLine("Seed:" + sudoku.Seed);
+                    Console.WriteLine("EmptyCount:" + sudoku.EmptyCount);
+                }          
+                else
+                {
+                    Console.Write(".");
                 }
-                for (int v=1; v<=size*size; v++)
-                {
-                    cell.Value = v;
-                    if (sudoku.IsValid(cell))
-                    {
-                        sudoku.SetCell(cell);
-                        Console.WriteLine(sudoku);
-                        break;
-                    }
-                }                    
             }
-            Console.WriteLine(sudoku);
         }
     }
 }

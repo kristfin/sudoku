@@ -6,11 +6,11 @@ namespace Sudoku
 {
     public class Cell : Location
     {
-        public Cell(int x, int y, int value) : base(x, y)
+        public Cell(int col, int row, int value) : base(col, row)
         {
             this.Value = value;
         }
-        public Cell(Location loc, int value) : base(loc.X, loc.Y)
+        public Cell(Location loc, int value) : base(loc.Column, loc.Row)
         {
             this.Value = value;
         }

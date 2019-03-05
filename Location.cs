@@ -2,17 +2,17 @@
 {
     public class Location
     {
-        public Location(int x, int y)
+        public Location(int col, int row)
         {
-            this.X = x;
-            this.Y = y;
+            this.Column = col;
+            this.Row = row;
         }
-        public int X { get; set; }
-        public int Y { get; set; }
+        public int Column { get; set; }
+        public int Row { get; set; }
 
         public override string ToString()
         {
-            return "X:" + X + ", Y:" + Y;
+            return "Col:" + Column + ", Row:" + Row;
         }
 
     }
