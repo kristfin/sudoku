@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sudoku.Algorithms;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -16,9 +17,15 @@ namespace Sudoku
             int success = 0;
             double totalTime = 0;
             Stopwatch stopwatch = new Stopwatch();
-            while (true)
-            {                
-                var sudoku = new Sudoku(size);//, 262632719);//, 2041746577);
+          //  while (true)
+            {
+                int seed = (int)DateTime.UtcNow.Ticks;
+                var sudoku = new Sudoku(size, seed);
+                // sudoku.NextEmptyCellFinderAlgoritm = new RandomNextEmptyCellFinderAlgorithm(seed);
+                // sudoku.SolverAlgorithm = new BruteForceSolverAlgorithm();
+                sudoku.SolverAlgorithm = new BacktrackSolverAlgorithm();
+                sudoku.NextEmptyCellFinderAlgoritm = new SimpleNextEmptyCellFinderAlgorithm();
+                
                 stopwatch.Restart();
                 var b = sudoku.Solve();
                 stopwatch.Stop();
@@ -34,14 +41,6 @@ namespace Sudoku
                     Console.WriteLine("Time per sudoku: " + (totalTime / success).ToString("F4"));
 
                 }
-                /*
-                else if (sudoku.EmptyCount < 3)                
-                {
-                    Console.WriteLine("\n----------");
-                    Console.WriteLine("Seed:" + sudoku.Seed);
-                    Console.WriteLine("EmptyCount:" + sudoku.EmptyCount);
-                }          
-                */
                 else
                 {
                     if (total % 100 == 0)

@@ -6,16 +6,24 @@ namespace Sudoku
 {
     public class Board
     {
+        public int CellCount => Size * Size * Size * Size;
+        public int HorizontalCellCount => Size * Size;
+        public int VerticalCellCount => Size * Size;
         public int Size { get; set; }
         List<int[]> board;
 
         public Board(int size)
         {
             this.Size = size;
+            Reset();
+        }
+
+        public void Reset()
+        {             
             this.board = new List<int[]>();
-            for (int i=0; i<size*size; i++)
+            for (int i=0; i<Size*Size; i++)
             {
-                this.board.Add(new int[size*size]);
+                this.board.Add(new int[Size*Size]);
             }
         }
         
@@ -50,6 +58,6 @@ namespace Sudoku
                 s += "\n" + ((row + 1) % Size == 0 ? hline + "\n" : "");
             }
             return s;
-        }
+        }       
     }
 }

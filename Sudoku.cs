@@ -10,23 +10,30 @@ namespace Sudoku
         Board board;
         Random random;
 
-        private int size2 => board.Size * board.Size;
-        private int size4 => board.Size * board.Size * board.Size * board.Size;
         public int SetCount { get; private set; } = 0;
-        public int EmptyCount => size4 - SetCount;
+        public int EmptyCount => CellCount - SetCount;
         public long IsValidCount { get; private set; } = 0;
         public int Seed { get; }
-
         public int Size => board.Size;
+        public int CellCount => (int)Math.Pow(board.Size, 4);
 
-        public INextEmptyCellFinderAlgoritm NextEmptyCellFinderAlgoritm {get; set;} 
+        public INextEmptyCellFinderAlgoritm NextEmptyCellFinderAlgoritm {get; set;}
+        
+        public ISolverAlgorithm SolverAlgorithm { get; set; }
 
         public Sudoku(int size=3, int seed = Int32.MinValue)
         {            
             this.Seed = seed == Int32.MinValue ? (int)DateTime.UtcNow.Ticks : seed;
-            NextEmptyCellFinderAlgoritm = new SimpleNextEmptyCellFinderAlgorithm(seed);
+            NextEmptyCellFinderAlgoritm = new RandomNextEmptyCellFinderAlgorithm(seed);
+            SolverAlgorithm = new BruteForceSolverAlgorithm();
             random = new Random(this.Seed);
             board = new Board(size);
+        }
+
+        public void Reset()
+        {
+            this.SetCount = 0;
+            this.board.Reset();
         }
 
         public override string ToString()
@@ -43,7 +50,15 @@ namespace Sudoku
         {
             SetCount++;
             board.Set(cell.Column, cell.Row, cell.Value);
-        }        
+        }
+
+        public void SetCells(List<Cell> history)
+        {
+            foreach(var cell in history)
+            {
+                SetCell(cell);
+            }            
+        }
 
         public Cell GetCell(int col, int row)
         {
@@ -123,51 +138,7 @@ namespace Sudoku
         }
 
         public virtual bool Solve()
-        {
-            bool stillHope = true;
-            while (stillHope)
-            {
-                stillHope = false;
-                if (EmptyCount == 0)
-                {
-                  //  Console.WriteLine("Congrats.  You have a new Sudoku");
-                    return true;
-                }
-                var badCells = new List<Cell>();
-                for (int x = 0; x < size4; x++)
-                {
-                    var cell = NextEmptyCell(badCells);
-                    if (cell == null)
-                    {
-                       // Console.WriteLine("No more locations");
-                        return false;
-                    }
-                   // Console.WriteLine("Next empty cell:" + cell);
-                    bool goodCell = false;
-                    for (int v = 1; v <= size2; v++)
-                    {
-                        cell.Value = v;
-                        if (IsValid(cell))
-                        {
-                            stillHope = true;
-                            goodCell = true;
-                            SetCell(cell);
-                            //Console.WriteLine(sudoku);
-                            break;
-                        }
-                    }
-                    if (!goodCell)
-                    {
-                        badCells.Add(cell);
-                    }
-                    if (!stillHope)
-                    {
-                        break;
-                    }
-                }               
-            }
-            return false;
-        }
+            => SolverAlgorithm.Solve(this);        
 
     }
 }
