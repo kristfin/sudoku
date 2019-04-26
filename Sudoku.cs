@@ -7,28 +7,22 @@ namespace Sudoku
 {
     public class Sudoku
     {
-        Board board;
-        Random random;
-
+        internal Board Board { get; }
+        internal Random Random { get; }
         public int SetCount { get; private set; } = 0;
         public int EmptyCount => CellCount - SetCount;
         public long IsValidCount { get; private set; } = 0;
         public int Seed { get; }
-        public int Size => board.Size;
-        public int CellCount => (int)Math.Pow(board.Size, 4);
-
-        public INextEmptyCellFinderAlgoritm NextEmptyCellFinderAlgoritm {get; set;}
-        
-        public ISolverAlgorithm SolverAlgorithm { get; set; }
-        public IEnumerable<Cell> Cells => GetCells();
+        public int Size => Board.Size;
+        public int CellCount => (int)Math.Pow(Board.Size, 4);        
+        public ISolverAlgorithm SolverAlgorithm { get; set; }        
 
         public Sudoku(int size=3, int seed = Int32.MinValue)
         {            
-            this.Seed = seed == Int32.MinValue ? (int)DateTime.UtcNow.Ticks : seed;
-            NextEmptyCellFinderAlgoritm = new RandomNextEmptyCellFinderAlgorithm(seed);
+            this.Seed = seed == Int32.MinValue ? (int)DateTime.UtcNow.Ticks : seed;            
             SolverAlgorithm = new BruteForceSolverAlgorithm();
-            random = new Random(this.Seed);
-            board = new Board(size);
+            Random = new Random(this.Seed);
+            Board = new Board(size);
         }
 
         private IEnumerable<Cell> GetCells()
@@ -51,12 +45,12 @@ namespace Sudoku
         public void Reset()
         {
             this.SetCount = 0;
-            this.board.Reset();
+            this.Board.Reset();
         }
 
         public override string ToString()
         {
-            string s = board.ToString();
+            string s = Board.ToString();
             s += "Seed:" + this.Seed + "\n";
             s += "Set cells:" + this.SetCount + "\n";
             s += "Empty cells:" + this.EmptyCount + "\n";
@@ -67,7 +61,13 @@ namespace Sudoku
         public void SetCell(Cell cell)
         {
             SetCount++;
-            board.Set(cell.Column, cell.Row, cell.Value);
+            Board.Set(cell.Column, cell.Row, cell.Value);
+        }
+
+        public void ClearCell(Cell cell)
+        {
+            SetCount--;
+            Board.Set(cell.Column, cell.Row, 0);
         }
 
         public void SetCells(List<Cell> history)
@@ -80,11 +80,8 @@ namespace Sudoku
 
         public Cell GetCell(int col, int row)
         {
-            return new Cell(col, row, board.Get(col, row));
+            return new Cell(col, row, Board.Get(col, row));
         }
-
-        public virtual Cell NextEmptyCell(List<Cell> excludedCells)
-            => NextEmptyCellFinderAlgoritm.NextEmptyCell(board, excludedCells);
 
         public bool IsValid(Cell cell)
         {
@@ -100,30 +97,30 @@ namespace Sudoku
         {
             var x1 = 0; // x < 3 ? 0 : x < 6 ? 3 : 6;
             var y1 = 0; // y < 3 ? 0 : y < 6 ? 3 : 6;            
-            for (int k = 0; k < board.Size*board.Size; k++)
+            for (int k = 0; k < Board.Size*Board.Size; k++)
             {
-                x1 = k * board.Size;
-                if (cell.Column < ((k + 1) * board.Size))
+                x1 = k * Board.Size;
+                if (cell.Column < ((k + 1) * Board.Size))
                 {
                     break;
                 }
             }
-            for (int k = 0; k < board.Size; k++)
+            for (int k = 0; k < Board.Size; k++)
             {
-                y1 = k * board.Size;
-                if (cell.Row < ((k + 1) * board.Size))
+                y1 = k * Board.Size;
+                if (cell.Row < ((k + 1) * Board.Size))
                 {
                     break;
                 }
             }
             var tmp = new List<int>();
-            for (int i = x1; i < (x1 + board.Size); i++)
+            for (int i = x1; i < (x1 + Board.Size); i++)
             {
-                for (int j = y1; j < (y1 + board.Size); j++)
+                for (int j = y1; j < (y1 + Board.Size); j++)
                 {
                     if (!(i == cell.Column && j == cell.Row))
                     {
-                        tmp.Add(board.Get(i, j));
+                        tmp.Add(Board.Get(i, j));
                     }                    
                 }
             }
@@ -135,9 +132,9 @@ namespace Sudoku
         public Row GetRow(Location location)
         {
             var tmp = new List<int>();
-            for (int i = 0; i < board.Size * board.Size; i++)
+            for (int i = 0; i < Board.Size * Board.Size; i++)
             {
-                tmp.Add(board.Get(i, location.Row));
+                tmp.Add(Board.Get(i, location.Row));
             }            
             var r = new Row(location, tmp);
           //  Console.WriteLine(r.ToString());
@@ -146,9 +143,9 @@ namespace Sudoku
         public Column GetColumn(Location location)
         {
             var tmp = new List<int>();
-            for (int i = 0; i < board.Size * board.Size; i++)
+            for (int i = 0; i < Board.Size * Board.Size; i++)
             {
-                tmp.Add(board.Get(location.Column, i));
+                tmp.Add(Board.Get(location.Column, i));
             }
             var c = new Column(location, tmp);
           //  Console.WriteLine(c.ToString());

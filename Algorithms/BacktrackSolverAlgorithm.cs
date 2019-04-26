@@ -7,30 +7,6 @@ namespace Sudoku.Algorithms
     {
         public bool Solve(Sudoku sudoku)
         {
-            var history = new List<Cell>();
-            var d = new Dictionary<string, int>();            
-
-            history.AddRange(sudoku.Cells);
-            int max = 500;
-            int idx = 0;
-
-            while (max-- > 0)
-            {
-                idx = history.Count;
-
-                if (Solve(sudoku, history))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private bool Solve(Sudoku sudoku, List<Cell> history)
-        {
-            sudoku.Reset();
-            sudoku.SetCells(history);
-
             if (sudoku.EmptyCount == 0)
             {
                 return true;
@@ -55,24 +31,22 @@ namespace Sudoku.Algorithms
             if (cell == null)
             {
                 return false;
-            }
-                       
+            }                       
 
-            var v = (int)(DateTime.UtcNow.Ticks % (size2));
+            var v = (int)(DateTime.UtcNow.Ticks % size2);
 
             for (int i = 0; i < size2; i++)
             {
                 cell.Value = (v++ % size2) + 1;
                 if (sudoku.IsValid(cell))
                 {
-               //     sudoku.SetCell(cell);
-                //    Console.WriteLine(sudoku);                    
-                    history.Add(cell);
-                    if (Solve(sudoku, history))
+                    sudoku.SetCell(cell);
+                    Console.WriteLine(sudoku);                                       
+                    if (Solve(sudoku))
                     {
                         return true;
-                    }
-                    history.RemoveAt(history.Count - 1);
+                    }                    
+                    sudoku.ClearCell(cell);                   
                 }
             }
             return false;

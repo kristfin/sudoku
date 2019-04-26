@@ -14,6 +14,5 @@
         {
             return "Col:" + Column + ", Row:" + Row;
         }
-
     }
 }
