@@ -25,7 +25,17 @@ namespace Sudoku
                 // sudoku.SolverAlgorithm = new BruteForceSolverAlgorithm();
                 sudoku.SolverAlgorithm = new BacktrackSolverAlgorithm();
                 sudoku.NextEmptyCellFinderAlgoritm = new SimpleNextEmptyCellFinderAlgorithm();
-                
+
+                sudoku.SetCell(new Cell(0, 0, 1));
+                sudoku.SetCell(new Cell(1, 0, 2));
+                sudoku.SetCell(new Cell(2, 0, 3));
+                sudoku.SetCell(new Cell(3, 0, 4));
+                sudoku.SetCell(new Cell(4, 0, 5));
+                sudoku.SetCell(new Cell(5, 0, 6));
+                sudoku.SetCell(new Cell(6, 0, 7));
+                sudoku.SetCell(new Cell(7, 0, 8));
+                sudoku.SetCell(new Cell(8, 0, 9));
+
                 stopwatch.Restart();
                 var b = sudoku.Solve();
                 stopwatch.Stop();

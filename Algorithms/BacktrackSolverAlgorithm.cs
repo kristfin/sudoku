@@ -8,6 +8,9 @@ namespace Sudoku.Algorithms
         public bool Solve(Sudoku sudoku)
         {
             var history = new List<Cell>();
+            var d = new Dictionary<string, int>();            
+
+            history.AddRange(sudoku.Cells);
             int max = 500;
             int idx = 0;
 

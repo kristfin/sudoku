@@ -20,6 +20,7 @@ namespace Sudoku
         public INextEmptyCellFinderAlgoritm NextEmptyCellFinderAlgoritm {get; set;}
         
         public ISolverAlgorithm SolverAlgorithm { get; set; }
+        public IEnumerable<Cell> Cells => GetCells();
 
         public Sudoku(int size=3, int seed = Int32.MinValue)
         {            
@@ -28,6 +29,23 @@ namespace Sudoku
             SolverAlgorithm = new BruteForceSolverAlgorithm();
             random = new Random(this.Seed);
             board = new Board(size);
+        }
+
+        private IEnumerable<Cell> GetCells()
+        {
+            var list = new List<Cell>();
+            for(int x =0; x<Size*Size; x++)
+            {
+                for (int y = 0; y < Size * Size; y++)
+                {
+                    var cell = GetCell(x, y);
+                    if (!cell.IsEmpty)
+                    {
+                        list.Add(cell);
+                    }
+                }
+            }
+            return list;
         }
 
         public void Reset()
