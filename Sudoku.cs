@@ -1,9 +1,10 @@
-﻿using Sudoku.Collections;
+﻿using Sudoku.Algorithms;
+using Sudoku.Collections;
 using System;
 using System.Collections.Generic;
 
 namespace Sudoku
-{    
+{
     public class Sudoku
     {
         Board board;
@@ -16,9 +17,14 @@ namespace Sudoku
         public long IsValidCount { get; private set; } = 0;
         public int Seed { get; }
 
+        public int Size => board.Size;
+
+        public INextEmptyCellFinderAlgoritm NextEmptyCellFinderAlgoritm {get; set;} 
+
         public Sudoku(int size=3, int seed = Int32.MinValue)
-        {
+        {            
             this.Seed = seed == Int32.MinValue ? (int)DateTime.UtcNow.Ticks : seed;
+            NextEmptyCellFinderAlgoritm = new SimpleNextEmptyCellFinderAlgorithm(seed);
             random = new Random(this.Seed);
             board = new Board(size);
         }
@@ -45,30 +51,7 @@ namespace Sudoku
         }
 
         public virtual Cell NextEmptyCell(List<Cell> excludedCells)
-        {
-            int size = board.Size;
-            var x = random.Next(0, size*size);
-            var y = random.Next(0, size*size);
-
-            for (int i = 0; i < size * size; i++)
-            {
-                for (int j = 0; j < size * size; j++)
-                {
-                    var cell = GetCell(x, y);
-                    if (cell.IsEmpty && !excludedCells.Contains(cell))
-                    {
-                        return cell;
-                    }
-                    else
-                    {
-                       // Console.WriteLine(cell + " is filled");
-                    }                        
-                    y = (y + 1) % (size * size);
-                }
-                x = (x + 1) % (size * size);
-            }
-            return null;
-        }
+            => NextEmptyCellFinderAlgoritm.NextEmptyCell(board, excludedCells);
 
         public bool IsValid(Cell cell)
         {

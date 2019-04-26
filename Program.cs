@@ -30,8 +30,9 @@ namespace Sudoku
                     Console.WriteLine("\n" + sudoku);
                     file.WriteLine(sudoku.Seed);
                     Console.WriteLine(success + "/" + total + " " + (100.0*success / total).ToString("F6"));
-                    Console.WriteLine("Time per sudoku: " + (totalTime / total).ToString("F4"));
-                        
+                    Console.WriteLine("Time per sudoku try: " + (totalTime / total).ToString("F4"));
+                    Console.WriteLine("Time per sudoku: " + (totalTime / success).ToString("F4"));
+
                 }
                 /*
                 else if (sudoku.EmptyCount < 3)                
