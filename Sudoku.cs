@@ -1,5 +1,4 @@
-﻿using Sudoku.Algorithms;
-using Sudoku.Collections;
+﻿using Sudoku.Collections;
 using System;
 using System.Collections.Generic;
 
@@ -15,12 +14,10 @@ namespace Sudoku
         public int Seed { get; }
         public int Size => Board.Size;
         public int CellCount => (int)Math.Pow(Board.Size, 4);        
-        public ISolverAlgorithm SolverAlgorithm { get; set; }        
 
         public Sudoku(int size=3, int seed = Int32.MinValue)
         {            
-            this.Seed = seed == Int32.MinValue ? (int)DateTime.UtcNow.Ticks : seed;            
-            SolverAlgorithm = new BruteForceSolverAlgorithm();
+            Seed = seed == Int32.MinValue ? (int)DateTime.UtcNow.Ticks : seed;            
             Random = new Random(this.Seed);
             Board = new Board(size);
         }
@@ -45,6 +42,7 @@ namespace Sudoku
         public void Reset()
         {
             this.SetCount = 0;
+            this.IsValidCount = 0;
             this.Board.Reset();
         }
 
@@ -52,8 +50,6 @@ namespace Sudoku
         {
             string s = Board.ToString();
             s += "Seed:" + this.Seed + "\n";
-            s += "Set cells:" + this.SetCount + "\n";
-            s += "Empty cells:" + this.EmptyCount + "\n";
             s += "IsValid count:" + this.IsValidCount;
             return s;
         }        
@@ -95,8 +91,8 @@ namespace Sudoku
         
         public Neighborhood GetNeighborhood(Cell cell)
         {
-            var x1 = 0; // x < 3 ? 0 : x < 6 ? 3 : 6;
-            var y1 = 0; // y < 3 ? 0 : y < 6 ? 3 : 6;            
+            var x1 = 0; 
+            var y1 = 0; 
             for (int k = 0; k < Board.Size*Board.Size; k++)
             {
                 x1 = k * Board.Size;
@@ -125,7 +121,6 @@ namespace Sudoku
                 }
             }
             var n = new Neighborhood(cell, tmp);
-          //  Console.WriteLine(n.ToString());
             return n;
         }
 
@@ -137,9 +132,9 @@ namespace Sudoku
                 tmp.Add(Board.Get(i, location.Row));
             }            
             var r = new Row(location, tmp);
-          //  Console.WriteLine(r.ToString());
             return r;
         }
+
         public Column GetColumn(Location location)
         {
             var tmp = new List<int>();
@@ -148,12 +143,53 @@ namespace Sudoku
                 tmp.Add(Board.Get(location.Column, i));
             }
             var c = new Column(location, tmp);
-          //  Console.WriteLine(c.ToString());
             return c;
         }
 
         public virtual bool Solve()
-            => SolverAlgorithm.Solve(this);        
+        {
+            if (EmptyCount == 0)
+            {
+                return true;
+            }
 
+            Cell cell = null;
+            int size2 = Size * Size;
+
+            for (int y = 0; y < size2; y++)
+            {
+                for (int x = 0; x < size2; x++)
+                {
+                    var tmp = GetCell(x, y);
+                    if (tmp.IsEmpty)
+                    {
+                        cell = tmp;
+                        break;
+                    }
+                }
+            }
+
+            if (cell == null)
+            {
+                return false;
+            }
+
+            var v = Random.Next(0, size2);
+
+            for (int i = 0; i < size2; i++)
+            {
+                cell.Value = (v++ % size2) + 1;
+                if (IsValid(cell))
+                {
+                    SetCell(cell);
+                    if (Solve())
+                    {
+                        return true;
+                    }
+                    ClearCell(cell);
+                }
+            }
+            return false;
+        }       
     }
 }

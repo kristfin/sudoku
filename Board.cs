@@ -31,6 +31,7 @@ namespace Sudoku
         {
             return board[row][col];
         }
+
         public void Set(int col, int row, int value)
         {
             board[row][col] = value;
