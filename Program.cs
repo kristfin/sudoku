@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 
-namespace Sudoku
+namespace Info.Obak.Sudoku
 {
     class Program
     {

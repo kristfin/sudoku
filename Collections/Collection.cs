@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Sudoku.Collections
+namespace Info.Obak.Sudoku.Collections
 {
     public enum CollectionType
     {

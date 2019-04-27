@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sudoku
+namespace Info.Obak.Sudoku
 {
     public class Cell : Location
     {

@@ -1,8 +1,8 @@
-﻿using Sudoku.Collections;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Info.Obak.Sudoku.Collections;
 
-namespace Sudoku
+namespace Info.Obak.Sudoku
 {
     public class Sudoku
     {
@@ -10,7 +10,7 @@ namespace Sudoku
         internal Random Random { get; }
         public int SetCount { get; private set; } = 0;
         public int EmptyCount => CellCount - SetCount;
-        public long IsValidCount { get; private set; } = 0;
+        public int IsValidCount { get; private set; } = 0;
         public int Seed { get; }
         public int Size => Board.Size;
         public int CellCount => (int)Math.Pow(Board.Size, 4);        
@@ -21,24 +21,7 @@ namespace Sudoku
             Random = new Random(this.Seed);
             Board = new Board(size);
         }
-
-        private IEnumerable<Cell> GetCells()
-        {
-            var list = new List<Cell>();
-            for(int x =0; x<Size*Size; x++)
-            {
-                for (int y = 0; y < Size * Size; y++)
-                {
-                    var cell = GetCell(x, y);
-                    if (!cell.IsEmpty)
-                    {
-                        list.Add(cell);
-                    }
-                }
-            }
-            return list;
-        }
-
+              
         public void Reset()
         {
             this.SetCount = 0;

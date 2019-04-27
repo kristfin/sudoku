@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Sudoku.Collections
+namespace Info.Obak.Sudoku.Collections
 {
     public class Row : Collection
     {

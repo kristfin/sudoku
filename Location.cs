@@ -1,4 +1,4 @@
-﻿namespace Sudoku
+﻿namespace Info.Obak.Sudoku
 {
     public class Location
     {
