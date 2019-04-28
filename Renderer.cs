@@ -5,25 +5,38 @@ namespace Info.Obak.Sudoku
 {
     public enum DifficulityLevel
     {
-        Easy,
-        Medium,
-        Hard
+        Easy = 34,
+        Medium = 31,
+        Hard = 28
     }
 
     public static class Renderer
     {
-        public static string ToHtml(Sudoku sudoku, DifficulityLevel level)
+        public static string ToHtml(XElement [] parts)
         {
             var html = new XElement("html");
             var head = new XElement("head");
             var style = new XElement("style", css);
             var body = new XElement("body");
-            var table = new XElement("table");
             html.Add(head);
             head.Add(style);
             html.Add(body);
-            body.Add(table);
+            body.Add(parts);
+            return html.ToString();
+        }
 
+        public static XElement ToHtmlPart(Sudoku sudoku, DifficulityLevel level)
+        {
+            var div = new XElement("div");
+            var table = new XElement("table");
+            div.Add(table);
+            var footer = new XElement("p", level.ToString() + " #" + sudoku.Seed);
+
+            div.Add(
+                table,
+                footer);
+            int hidden = 0;
+            var deck = GetDeck(sudoku.CellCount, (int)level);
             for (int y=0; y<sudoku.RowCount; y++)
             {
                 var row = sudoku.GetRow(y);
@@ -42,14 +55,42 @@ namespace Info.Obak.Sudoku
                         clazz = "left2";
                     }
                     var value = "0123456789ABCDEFGHIJKLMNOPQRST"[row.Values[x]];
+
+                    int idx = y * sudoku.RowCount + x;
+
+                    if (deck[idx] == 0)
+                    {
+                        hidden++;
+                        value = ' ';
+                    }
                     
                     rowX.Add(new XElement("td", value, 
                         new XAttribute("class", clazz),
                         new XAttribute("id", "cell_"+x+"_"+y)));
                 }
             }
+            var given = sudoku.CellCount - hidden;
+            footer.Value += " "+ given + "/" + sudoku.CellCount;
 
-            return html.ToString();
+            return div;
+        }
+
+        private static int[] GetDeck(int length, int ones)
+        {
+            Random random = new Random();
+            var list = new int[length];
+            for (int i=0; i<length; i++)
+            {
+                list[i] = (i < ones) ? 1 : 0;
+            }
+            for (int i=0; i<length; i++)
+            {
+                var idx = random.Next(i, length);
+                var tmp = list[idx];
+                list[idx] = list[i];
+                list[i] = tmp;
+            }
+            return list;
         }
 
         private const string css = @"

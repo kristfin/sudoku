@@ -11,16 +11,16 @@ namespace Info.Obak.Sudoku
         public int SetCount { get; private set; } = 0;
         public int EmptyCount => CellCount - SetCount;
         public int IsValidCount { get; private set; } = 0;
-        public int Seed { get; }
+        public UInt32 Seed { get; }
         public int Size => Board.Size;
         public int RowCount => Board.Size * Board.Size;
         public int ColumnCount => RowCount;
         public int CellCount => RowCount * ColumnCount;
 
-        public Sudoku(int size=3, int seed = Int32.MinValue)
+        public Sudoku(int size=3, UInt32 seed = 0)
         {            
-            Seed = seed == Int32.MinValue ? (int)DateTime.UtcNow.Ticks : seed;            
-            Random = new Random(this.Seed);
+            Seed = seed == 0 ? (UInt32)DateTime.UtcNow.Ticks : seed;            
+            Random = new Random((int)Seed);
             Board = new Board(size);
         }
               
