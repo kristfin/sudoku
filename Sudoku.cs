@@ -13,7 +13,9 @@ namespace Info.Obak.Sudoku
         public int IsValidCount { get; private set; } = 0;
         public int Seed { get; }
         public int Size => Board.Size;
-        public int CellCount => (int)Math.Pow(Board.Size, 4);        
+        public int RowCount => Board.Size * Board.Size;
+        public int ColumnCount => RowCount;
+        public int CellCount => RowCount * ColumnCount;
 
         public Sudoku(int size=3, int seed = Int32.MinValue)
         {            
@@ -107,25 +109,27 @@ namespace Info.Obak.Sudoku
             return n;
         }
 
-        public Row GetRow(Location location)
+        public Row GetRow(int row)
         {
             var tmp = new List<int>();
             for (int i = 0; i < Board.Size * Board.Size; i++)
             {
-                tmp.Add(Board.Get(i, location.Row));
-            }            
-            var r = new Row(location, tmp);
-            return r;
+                tmp.Add(Board.Get(i, row));
+            }
+            return new Row(new Location(0, row), tmp);
         }
 
-        public Column GetColumn(Location location)
+        public Row GetRow(Location location) => GetRow(location.Row);
+        public Column GetColumn(Location location) => GetColumn(location.Column);
+
+        public Column GetColumn(int column)
         {
             var tmp = new List<int>();
             for (int i = 0; i < Board.Size * Board.Size; i++)
             {
-                tmp.Add(Board.Get(location.Column, i));
+                tmp.Add(Board.Get(column, i));
             }
-            var c = new Column(location, tmp);
+            var c = new Column(new Location(column, 0), tmp); 
             return c;
         }
 

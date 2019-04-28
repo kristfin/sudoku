@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace Info.Obak.Sudoku
 {
@@ -7,7 +8,7 @@ namespace Info.Obak.Sudoku
     {
         static void Main(string[] args)
         {
-            int size = args.Length > 0 ? Int32.Parse(args[0]) : 3;
+            int size = args.Length > 0 ? Int32.Parse(args[0]) : 4;
             Stopwatch stopwatch = new Stopwatch();
             var sudoku = new Sudoku(size);
             stopwatch.Restart();
@@ -16,6 +17,13 @@ namespace Info.Obak.Sudoku
             var totalTime = stopwatch.Elapsed.TotalMilliseconds;
             Console.WriteLine("\n" + sudoku);
             Console.WriteLine("Time: " + totalTime.ToString("F2") +"ms");
+
+            //var file = Path.GetTempFileName() + ".html";
+            var file = "/tmp/sudoku.html";
+
+            File.WriteAllText(file, Renderer.ToHtml(sudoku, DifficulityLevel.Easy));
+
+            Console.WriteLine("Wrote to " + file);
         }
     }
 }
