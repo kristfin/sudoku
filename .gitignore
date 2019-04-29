@@ -5,3 +5,4 @@ obj
 /.vs/Sudoku/v16/Server/sqlite3/storage.ide-shm
 /.vs/Sudoku/v16/Server/sqlite3/storage.ide
 /.vs/Sudoku/v16/Server/sqlite3/db.lock
+/.vs/Sudoku/config/applicationhost.config

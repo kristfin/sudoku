@@ -1,7 +1,7 @@
 @echo off
 
 for %%f in (Hard Medium Easy) do (	
-	dotnet run -- --size 3 --count 12 --file %tmp%\%%f.html --output Html --level %%f
+	dotnet run -- --size 3 --count 1 --file %tmp%\%%f.html --output Html --level %%f
 	%tmp%\%%f.html
 )
 

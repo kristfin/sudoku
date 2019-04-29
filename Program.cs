@@ -38,6 +38,9 @@ namespace Info.Obak.Sudoku
 
         static void Main(string[] args)
         {
+            var parser = new Parser(conf =>
+            {
+            });
             Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
             {
                 if (o.Size < 2 || o.Size > 5)
