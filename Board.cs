@@ -10,7 +10,7 @@ namespace Info.Obak.Sudoku
         public int HorizontalCellCount => Size * Size;
         public int VerticalCellCount => Size * Size;
         public int Size { get; set; }
-        List<int[]> board;
+        int[,] board;
 
         public Board(int size)
         {
@@ -19,22 +19,18 @@ namespace Info.Obak.Sudoku
         }
 
         public void Reset()
-        {             
-            this.board = new List<int[]>();
-            for (int i=0; i<Size*Size; i++)
-            {
-                this.board.Add(new int[Size*Size]);
-            }
+        {
+            this.board = new int[Size*Size, Size*Size];
         }
         
         public int Get(int col, int row)
         {
-            return board[row][col];
+            return board[row,col];
         }
 
         public void Set(int col, int row, int value)
         {
-            board[row][col] = value;
+            board[row,col] = value;
         }
 
         public override string ToString()
