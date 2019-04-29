@@ -39,26 +39,36 @@ namespace Info.Obak.Sudoku
 
         public override string ToString()
         {
+            return Render(null);
+        }       
+
+        public string Render(int[] deck)
+        {
             int quad = Size * Size * Size * Size;
-            int pad = (int)Math.Log10(quad) ;
+            int pad = (int)Math.Log10(quad);
             var s = "   " + new string(' ', pad);
-            for (int i=0; i<Size*Size; i++)
+            for (int i = 0; i < Size * Size; i++)
             {
-                s +=  ("" + i).PadLeft(pad) + ((i + 1) % Size == 0 ? "   " : " ");
+                s += ("" + i).PadLeft(pad) + ((i + 1) % Size == 0 ? "   " : " ");
             }
-            var hline = " " + new string(' ', pad) + new string('-', (pad+1) * Size * Size + (Size+1)* 2 - 1 );
+            var hline = " " + new string(' ', pad) + new string('-', (pad + 1) * Size * Size + (Size + 1) * 2 - 1);
             s += "\n" + hline + "\n";
-            for (int row = 0; row < Size * Size; row++)                
+            for (int row = 0; row < Size * Size; row++)
             {
-                s += (""+row).PadLeft(pad)+" | ";
+                s += ("" + row).PadLeft(pad) + " | ";
                 for (int col = 0; col < Size * Size; col++)
                 {
-                    int val = Get(col, row);
+                    var val = "0123456789ABCDEFGHIJKLMNOPQRST"[Get(col, row)];
+                    if (deck != null && deck[row * Size * Size + col] == 0)
+                    {
+                        val = ' ';
+                    }                    
+                    
                     s += val.ToString().PadLeft(pad) + " " + ((col + 1) % Size == 0 ? "| " : "");
                 }
                 s += "\n" + ((row + 1) % Size == 0 ? hline + "\n" : "");
             }
             return s;
-        }       
+        }
     }
 }
