@@ -32,7 +32,7 @@ namespace Info.Obak.Sudoku
             [Option("seed", Default=(uint)0, Required = false, HelpText = "Initial seed for the sudoku.")]
             public UInt32 Seed { get; set; }
 
-            [Option('l', "level", Default = DifficulityLevel.Medium, Required = false, HelpText = "How hard should the sudokus be. Easy, Medium and Hard is supported")]
+            [Option('l', "level", Default = DifficulityLevel.Medium, Required = false, HelpText = "How hard should the sudokus be. Easy, Medium, Hard  and None is supported")]
             public DifficulityLevel Level { get; set; } = DifficulityLevel.Medium;
         }
 
