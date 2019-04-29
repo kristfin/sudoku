@@ -17,35 +17,33 @@ namespace Info.Obak.Sudoku
         }
         public class Options
         {
-            [Option('o', "output", Required = false, HelpText = "Outputmode for generated sudokus. Text or Html supported.")]
-            public OutputMode OutputMode { get; set; } = OutputMode.Text;
+            [Option('o', "output", Default=OutputMode.Text, Required = false, HelpText = "Outputmode for generated sudokus. Text or Html supported.")]
+            public OutputMode OutputMode { get; set; }
 
             [Option('f', "file", Required = false, HelpText = "Output file.  If none, stdout is used.")]
             public string OutputFile { get; set; }
 
-            [Option('c', "count", Required = false, HelpText = "How many sudokus to generate.")]
-            public uint Count { get; set; } = 1;
+            [Option('c', "count", Default=(uint)1, Required = false, HelpText = "How many sudokus to generate.")]
+            public uint Count { get; set; }
 
-            [Option("size", Required = false, HelpText = "How big should the sudokos be.  Only 3, 4 and 5 is supported.")]
-            public uint Size { get; set; } = 3;
+            [Option("size", Default=(uint)3, Required = false, HelpText = "How big should the sudokos be.  Only 3, 4 and 5 is supported.")]
+            public uint Size { get; set; }
 
-            [Option("seed", Required = false, HelpText = "Initial seed for the sudoku.")]
-            public UInt32 Seed { get; set; } = 0;
+            [Option("seed", Default=(uint)0, Required = false, HelpText = "Initial seed for the sudoku.")]
+            public UInt32 Seed { get; set; }
 
-            [Option('l', "level", Default = DifficulityLevel.Medium, Required = false, HelpText = "How hard should the sudokus be.")]
+            [Option('l', "level", Default = DifficulityLevel.Medium, Required = false, HelpText = "How hard should the sudokus be. Easy, Medium and Hard is supported")]
             public DifficulityLevel Level { get; set; } = DifficulityLevel.Medium;
         }
 
         static void Main(string[] args)
         {
-            var parser = new Parser(conf =>
-            {
-            });
             Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
             {
                 if (o.Size < 2 || o.Size > 5)
                 {
-                    throw new ArgumentException("Size must be greater than 1 and less than 6");
+                    Console.Error.WriteLine("Size must be greater than 1 and less than 6");
+                    return;
                 }
                 UInt32 seed = o.Seed == 0 ? (UInt32)DateTime.UtcNow.Ticks : o.Seed;
                 var sudokus = new List<Sudoku>();
@@ -66,8 +64,15 @@ namespace Info.Obak.Sudoku
                 }
                 if (o.OutputFile != null)
                 {
-                    Console.WriteLine("Output to: " + o.OutputFile);
-                    File.WriteAllText(o.OutputFile, txt);
+                    try
+                    {
+                        File.WriteAllText(o.OutputFile, txt);
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.Error.WriteLine("Unable to write to file '" + o.OutputFile + "': " + ex.Message);
+                        return;
+                    }
                 }
                 else
                 {
